@@ -1,19 +1,17 @@
 <template>
+
   <nav 
-      :class="[`navbar-\${theme}`, `bg-${theme}`, 'navbar', 'navbar-expand-lg']"
+      :class="[`navbar-${theme}`, `bg-${theme}`, 'navbar', 'navbar-expand-lg']"
     >
       <div class="container-fluid">
         <a href="#" class="navbar-brand">My Vue</a>
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li v-for="(page, index) in page" class="nav-item" :key="index">
-            <a 
-              :href="page.link.url" 
-              class="nav-link" 
-              :class="{active: activePage == index}"
-              aria-current="page" 
-              :title="`This link goes to the ${page.link.text} page`"
+            <navbar-link
+              :page="page"
+              :isActive="activePage == index"
               @click.prevent="navLinkClick(index)"
-            >{{ page.link.text }}</a>
+            ></navbar-link>
           </li>
         </ul>
         <form class="d-flex">
@@ -28,14 +26,24 @@
 </template>
 
 <script>
+
+import NavbarLink from '../components/NavbarLink.vue'
+
 export default {
+  components : {
+    NavbarLink
+  },
   props: ['page', 'activePage', 'navLinkClick'],
+
   data(){
     return{
       theme: "light"
     }
   },
   // The toggle method is specific to the navigation bar 
+  created() {
+    this.getThemeSetting()
+  },
   methods: {
     changeTheme(){
       let theme = "light";
@@ -43,9 +51,21 @@ export default {
         theme = "dark";
       }
       this.theme = theme;
-    }
+      this.storeThemeSetting();
+    },
+    storeThemeSetting() {
+      // localStorage is used to store data locally to the browser 
+      // it is similar to caching/cookies 
+      localStorage.setItem('theme', this.theme);
+    },
+    getThemeSetting() {
+      let theme = localStorage.getItem('theme');
+
+      if (theme) {
+        this.theme = theme;
+      }
+    },
   }
 }
-
 
 </script>
