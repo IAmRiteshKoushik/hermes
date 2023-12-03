@@ -33,6 +33,11 @@ export default {
   components : {
     NavbarLink
   },
+  computed: {
+    publishedPage() {
+      return this.pages.filter(p => p.published);
+    }
+  },
   props: ['page', 'activePage', 'navLinkClick'],
 
   data(){

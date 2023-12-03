@@ -14,7 +14,7 @@
     <!-- ></page-viewer> -->
 
     <create-page
-      :page-created="pageCreated()"
+      :page-created="pageCreated"
     ></create-page>
 </template>
 
@@ -48,7 +48,7 @@ export default {
       this.pages = data;
     },
     pageCreated(pageObj) {
-      console.log(pageObj);
+      this.pages.push(pageObj) // push method to lists in javascript array
     }
   }
 }
