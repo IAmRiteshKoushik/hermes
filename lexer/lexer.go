@@ -114,7 +114,8 @@ func (l *Lexer) readNumber() string {
 
 func isDigit(ch byte) bool {
 	/*
-	 * This function checks for digits
+	 * TODO: Currently, we are only supporting integers, ideally we should be able
+	 * to support floats, hex, octal and other numerical formats
 	 */
 	return '0' <= ch && ch <= '9'
 }
