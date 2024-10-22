@@ -30,6 +30,9 @@ keyword, we can then check the appropriate token type.
 `skipWhitespace()` or `eatWhitespace()` or `consumeWhitespace()` is found in a 
 lot of parsers/lexers
 
+- Next, we need to support different symbols and tokens
+`==, !, !=, -, /, *, <, >, true, false, if, else, return`
+
 2. **The parser**
 3. **The Abstract Syntax Tree (AST)**
 4. **The internal object system**
