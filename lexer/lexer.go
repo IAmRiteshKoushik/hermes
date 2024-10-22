@@ -8,6 +8,7 @@ package lexer
  */
 
 import (
+	"fmt"
 	"github.com/IAmRiteshKoushik/hermes/token"
 )
 
@@ -43,6 +44,7 @@ func (l *Lexer) readChar() {
 
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
+	l.skipWhitespace()
 
 	switch l.ch {
 	case '=':
@@ -64,9 +66,68 @@ func (l *Lexer) NextToken() token.Token {
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
+	default:
+		if isLetter(l.ch) {
+			tok.Literal = l.readIdentifier()
+			tok.Type = token.LookupIdent(tok.Literal)
+			return tok
+		} else if isDigit(l.ch) {
+			tok.Type = token.INT
+			tok.Literal = l.readNumber()
+			return tok
+		} else {
+			fmt.Println("Am I here too")
+			tok = newToken(token.ILLEGAL, l.ch)
+		}
 	}
 	l.readChar()
 	return tok
+}
+
+func (l *Lexer) skipWhitespace() {
+	// Skip spaces, tabs, newline and carriage return
+	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
+		l.readChar()
+	}
+}
+
+func (l *Lexer) readIdentifier() string {
+	/* For reading the entire identifier, we mark the first position and then go
+		* on reading in the characters in a while (for in Go) loop till isLetter()
+		* condition is satisfied. Then return the identifier as a string by slicing
+	  * the entire position from starting to ending position
+	*/
+	position := l.position
+	for isLetter(l.ch) {
+		l.readChar()
+	}
+	return l.input[position:l.position]
+}
+
+func (l *Lexer) readNumber() string {
+	position := l.position
+	for isDigit(l.ch) {
+		l.readChar()
+	}
+	return l.input[position:l.position]
+}
+
+func isDigit(ch byte) bool {
+	/*
+	 * This function checks for digits
+	 */
+	return '0' <= ch && ch <= '9'
+}
+
+func isLetter(ch byte) bool {
+	/*
+	* Currently, supporting only alphabets and underscores for identifiers. Might
+	* add number support later as well.
+	* TODO: Add support for digits, !, ?, and make sure that strings do not begin
+	* with them as they are identifiers
+	 */
+
+	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
 }
 
 func newToken(tokenType token.TokenType, ch byte) token.Token {
